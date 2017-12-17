@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "getUserByLogin", query = "from User u where u.login=:login"),
+        @NamedQuery(name = "getAll", query = "from User")
+})
 public class User {
 
     public User() {

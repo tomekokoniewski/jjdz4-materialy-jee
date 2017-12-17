@@ -5,6 +5,7 @@ import com.infoshareacademy.searchengine.interceptors.AddUserInterceptor;
 import com.infoshareacademy.searchengine.interceptors.AddUserSetGenderInterceptor;
 import com.infoshareacademy.searchengine.repository.UsersRepository;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 import java.util.ArrayList;
@@ -13,41 +14,29 @@ import java.util.List;
 @Stateless
 public class UsersRepositoryDaoBean implements UsersRepositoryDao, UsersRepositoryDaoRemote {
 
+    @EJB
+    private UsersRepository usersRepository;
+
     @Override
     @Interceptors({AddUserSetGenderInterceptor.class, AddUserInterceptor.class})
     public boolean addUser(User user) {
-        if (!UsersRepository.contains(user)) {
-            UsersRepository.getRepository().add(user);
-            return true;
-        }
-        return false;
+        usersRepository.addUser(user);
+        return true;
     }
 
     @Override
     public User getUserById(int id) {
-        List<User> userList = UsersRepository.getRepository();
-        for (User user : userList) {
-            if (user.getId() == id) {
-                return user;
-            }
-        }
-        return null;
+        return usersRepository.getUserById(id);
     }
 
     @Override
     public User getUserByLogin(String login) {
-        List<User> userList = UsersRepository.getRepository();
-        for (User user : userList) {
-            if (user.getLogin().equals(login)) {
-                return user;
-            }
-        }
-        return null;
+        return usersRepository.getUserByLogin(login);
     }
 
     @Override
     public List<User> getUsersList() {
-        return UsersRepository.getRepository();
+        return usersRepository.getUsersList();
     }
 
     @Override
