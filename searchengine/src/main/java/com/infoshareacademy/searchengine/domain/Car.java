@@ -2,7 +2,7 @@ package com.infoshareacademy.searchengine.domain;
 
 import javax.persistence.*;
 
-@Entity
+//@Entity
 @NamedQueries({
         @NamedQuery(name = "selectAll",query = "from Car "),
         @NamedQuery(name = "update",query = "update Car set model=:model where model=:modelToUpdate")})
