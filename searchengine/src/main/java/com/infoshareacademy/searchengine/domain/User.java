@@ -19,6 +19,7 @@ public class User {
     @Column(nullable=false, unique=true)
     private int id;
 
+    @FirstLetterA
     private String name;
 
     private String surname;
