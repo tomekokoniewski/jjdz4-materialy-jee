@@ -10,20 +10,16 @@ import java.util.Map;
 
 @Stateless
 public class StatisticsRepository {
-    private static Map<User, Integer> statisticsRepository = new HashMap<>();
 
     @EJB
     UsersRepository usersRepository;
 
     public Map<User, Integer> getRepository() {
-        fillRepositoryWithDefaults();
-        return statisticsRepository;
-    }
-
-    private void fillRepositoryWithDefaults() {
+        Map<User, Integer> statisticsRepository = new HashMap<>();
         List<User> repository = usersRepository.getUsersList();
         for (User user : repository) {
-            statisticsRepository.putIfAbsent(user, 0);
+            statisticsRepository.put(user, 0);
         }
+        return statisticsRepository;
     }
 }
