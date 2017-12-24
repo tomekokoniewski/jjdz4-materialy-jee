@@ -2,22 +2,24 @@ package com.infoshareacademy.searchengine.repository;
 
 import com.infoshareacademy.searchengine.domain.User;
 
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Stateless
 public class StatisticsRepository {
-    private static Map<User, Integer> statisticsRepository = new HashMap<>();
 
-    public static Map<User, Integer> getRepository() {
-        fillRepositoryWithDefaults();
-        return statisticsRepository;
-    }
+    @EJB
+    UsersRepository usersRepository;
 
-    private static void fillRepositoryWithDefaults() {
-        List<User> repository = UsersRepository.getRepository();
+    public Map<User, Integer> getRepository() {
+        Map<User, Integer> statisticsRepository = new HashMap<>();
+        List<User> repository = usersRepository.getUsersList();
         for (User user : repository) {
-            statisticsRepository.putIfAbsent(user, 0);
+            statisticsRepository.put(user, 0);
         }
+        return statisticsRepository;
     }
 }

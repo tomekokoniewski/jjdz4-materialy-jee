@@ -1,7 +1,6 @@
 package com.infoshareacademy.searchengine.servlets;
 
 import com.infoshareacademy.searchengine.dao.UsersRepositoryDao;
-import org.jboss.crypto.CryptoUtil;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -19,8 +18,8 @@ public class PasswordServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        String hashedPassword = CryptoUtil.createPasswordHash("MD5", "hex", null, null, req.getParameter("password"));
-        resp.getWriter().println(hashedPassword);
+//FIXME doesn't compile
+//        String hashedPassword = CryptoUtil.createPasswordHash("MD5", "hex", null, null, req.getParameter("password"));
+//        resp.getWriter().println(hashedPassword);
     }
 }
