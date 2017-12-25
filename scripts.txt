@@ -58,7 +58,7 @@
 
 dsJndiName=java:/ISAJeeAuth
 principalsQuery=select password from users where login=?
-rolesQuery=select user_role, 'Roles' from  ROLES where user_login=?
+rolesQuery=select user_role, 'Roles' from roles where user_login=?
 hashAlgorithm=MD5
 hashEncoding=hex
 
