@@ -82,5 +82,5 @@ CREATE TABLE `roles` (
   `role_group` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
-INSERT INTO `users` VALUES (1,'adminUser','0192023a7bbd73250516f069df18b500',NULL,NULL);
+INSERT INTO `users` VALUES (1,'adminUser','0192023a7bbd73250516f069df18b500',NULL,NULL); // admin123
 INSERT INTO `roles` VALUES (1,'adminUser','admin','admin');

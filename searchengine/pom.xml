@@ -15,21 +15,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>5.2.12.Final</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.8-dmr</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -39,15 +28,104 @@
         <dependency>
             <groupId>org.wildfly</groupId>
             <artifactId>wildfly-security</artifactId>
-            <version>11.0.0.Final</version>
+            <version>${wildfly.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>xnio-nio</artifactId>
+                    <groupId>org.jboss.xnio</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.xnio</groupId>
+            <artifactId>xnio-nio</artifactId>
+            <version>3.5.4.Final</version>
+        </dependency>
+        <!-- TESTS -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <mysql.version>8.0.8-dmr</mysql.version>
+        <wildfly.version>11.0.0.Final</wildfly.version>
+        <wildfly.username>admin</wildfly.username>
+        <wildfly.password>admin1</wildfly.password>
+        <wildfly.jbossHome>${project.build.directory}/wildfly-${wildfly.version}</wildfly.jbossHome>
+        <wildfly.debug-opts>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</wildfly.debug-opts>
+        <database.jndi>java:/mysql</database.jndi>
+        <database.connection>jdbc:mysql://192.168.99.100:3306/isa</database.connection>
+        <database.user>isa_user</database.user>
+        <database.password>admin</database.password>
+        <auth-datasource.jndi>java:/ISAJeeAuth</auth-datasource.jndi>
+        <auth-datasource.connection>jdbc:mysql://192.168.99.100:3306/isa-jee-auth</auth-datasource.connection>
+        <auth-datasource.user>root</auth-datasource.user>
+        <auth-datasource.password>root</auth-datasource.password>
     </properties>
     <build>
         <finalName>${project.artifactId}</finalName>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.wildfly.plugins</groupId>
+                    <artifactId>wildfly-maven-plugin</artifactId>
+                    <version>1.2.1.Final</version>
+                    <configuration>
+                        <beforeDeployment>
+                            <scripts>
+                                <script>target/scripts/setup-datasource.cli</script>
+                            </scripts>
+                        </beforeDeployment>
+                        <addUser>
+                            <users>
+                                <user>
+                                    <username>${wildfly.username}</username>
+                                    <password>${wildfly.password}</password>
+                                </user>
+                            </users>
+                        </addUser>
+                        <jbossHome>${wildfly.jbossHome}</jbossHome>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>mysql</groupId>
+                            <artifactId>mysql-connector-java</artifactId>
+                            <version>${mysql.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.0.2</version>
+                    <executions>
+                        <execution>
+                            <id>download-wildfly</id>
+                            <goals>
+                                <goal>unpack</goal>
+                            </goals>
+                            <configuration>
+                                <artifactItems>
+                                    <artifactItem>
+                                        <groupId>org.wildfly</groupId>
+                                        <artifactId>wildfly-dist</artifactId>
+                                        <version>${wildfly.version}</version>
+                                        <type>zip</type>
+                                        <overWrite>false</overWrite>
+                                        <outputDirectory>${project.build.directory}</outputDirectory>
+                                    </artifactItem>
+                                </artifactItems>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -72,16 +150,48 @@
                     </clientIncludes>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.wildfly.plugins</groupId>
-                <artifactId>wildfly-maven-plugin</artifactId>
-                <version>1.2.1.Final</version>
-                <configuration>
-                    <java-opts>
-                        <java-opt>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005</java-opt>
-                    </java-opts>
-                </configuration>
-            </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/scripts</directory>
+                <filtering>true</filtering>
+                <targetPath>${project.build.directory}/scripts</targetPath>
+            </resource>
+        </resources>
     </build>
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>download-wildfly</id>
+                                <phase>package</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-maven-plugin</artifactId>
+                        <configuration>
+                            <java-opts>
+                                <java-opt>${wildfly.debug-opts}</java-opt>
+                            </java-opts>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
