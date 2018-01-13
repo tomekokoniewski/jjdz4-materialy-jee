@@ -32,7 +32,7 @@ public class User {
     private Gender gender;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "phone_id")
+    @JoinColumn(name = "user_id")
     private List<Phone> phones = new ArrayList<>();
 
     public String getName() {
