@@ -82,6 +82,7 @@
         <auth-datasource.connection>jdbc:mysql://192.168.99.100:3306/isa-jee-auth</auth-datasource.connection>
         <auth-datasource.user>root</auth-datasource.user>
         <auth-datasource.password>root</auth-datasource.password>
+        <arquillian.version>1.2.0.Final</arquillian.version>
     </properties>
     <build>
         <finalName>${project.artifactId}</finalName>
