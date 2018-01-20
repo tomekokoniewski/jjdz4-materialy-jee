@@ -27,6 +27,6 @@ public class StatisticsRepositoryDaoBean implements StatisticsRepositoryDao {
 
     @Override
     public Integer getStatisticsByUser(User user) {
-        return statisticsRepository.getRepository().get(user);
+        return statisticsRepository.getRepository().getOrDefault(user, 0);
     }
 }

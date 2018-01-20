@@ -8,8 +8,8 @@
     <container qualifier="wildfly-remote">
         <configuration>
             <property name="managementAddress">127.0.0.1</property>
-            <property name="username"></property>
-            <property name="password"></property>
+            <property name="username">${wildfly.username}</property>
+            <property name="password">${wildfly.password}</property>
         </configuration>
     </container>
 
