@@ -4,6 +4,7 @@ import com.infoshareacademy.searchengine.domain.Gender;
 import com.infoshareacademy.searchengine.domain.Phone;
 import com.infoshareacademy.searchengine.domain.User;
 import com.infoshareacademy.searchengine.repository.StatisticsRepository;
+import com.infoshareacademy.searchengine.repository.UsersRepository;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -27,9 +28,10 @@ public class StatisticsRepositoryDaoBeanTest {
                 .addClasses(
                         StatisticsRepositoryDaoBean.class,
                         StatisticsRepository.class, StatisticsRepositoryDao.class,
+                        UsersRepository.class,
                         User.class, Gender.class, Phone.class
                 )
-                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+                .addAsManifestResource("test-persistence.xml", "persistence.xml");
     }
 
     @Test
