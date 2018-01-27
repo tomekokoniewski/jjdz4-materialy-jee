@@ -11,15 +11,15 @@ import java.util.Map;
 @Stateless
 public class StatisticsRepository {
 
-    @EJB
-    UsersRepository usersRepository;
+//    @EJB
+//    UsersRepository usersRepository;
 
     public Map<User, Integer> getRepository() {
         Map<User, Integer> statisticsRepository = new HashMap<>();
-        List<User> repository = usersRepository.getUsersList();
-        for (User user : repository) {
-            statisticsRepository.put(user, 0);
-        }
+//        List<User> repository = usersRepository.getUsersList();
+//        for (User user : repository) {
+//            statisticsRepository.put(user, 0);
+//        }
         return statisticsRepository;
     }
 }
